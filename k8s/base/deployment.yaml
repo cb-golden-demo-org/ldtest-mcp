@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: hackers-organized
-          image: ldonleycb/hackers-organized
+          image: ldonleycb/hackers-organized:latest
           imagePullPolicy: Always
           envFrom:
             - configMapRef:
@@ -25,4 +25,31 @@ spec:
           ports:
             - containerPort: 80
               protocol: TCP
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "128Mi"
+              cpu: "100m"
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            capabilities:
+              drop:
+                - ALL
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 5
       restartPolicy: Always
